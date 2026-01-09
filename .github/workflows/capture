@@ -1,0 +1,36 @@
+name: signage-capture
+
+on:
+  schedule:
+    # 平日 8:20–17:40 JST
+    # GitHub は UTC なので -9 時間
+    - cron: '20-40/3 23-8 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: |
+          npm install
+          npx playwright install --with-deps
+
+      - name: Take screenshot
+        run: npm run shot
+
+      - name: Commit image
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add public/latest.png
+          git commit -m "update screenshot" || echo "no change"
+          git push
