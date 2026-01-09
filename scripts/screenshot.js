@@ -31,7 +31,7 @@ const URL = 'https://solar-carport.meiwajp-dev.link/meiwa-rental';
   await page.waitForTimeout(5000);
 
   // 保存先
-  const path = 'public/latest.png';
+  const path = 'latest.png';
 
   await page.screenshot({
     path,
