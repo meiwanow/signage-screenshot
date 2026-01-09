@@ -2,9 +2,11 @@ name: signage-capture
 
 on:
   schedule:
-    # 平日 8:20–17:40 JST
-    # GitHub は UTC なので -9 時間
-    - cron: '20-40/3 23-8 * * 1-5'
+    # 平日 8:20–17:40 JST（UTC換算）
+    # 23:20–23:59
+    - cron: '20-59/3 23 * * 1-5'
+    # 00:00–08:40
+    - cron: '0-40/3 0-8 * * 1-5'
   workflow_dispatch:
 
 jobs:
