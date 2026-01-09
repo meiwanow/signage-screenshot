@@ -1,0 +1,11 @@
+{
+  "name": "signage-screenshot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "shot": "node scripts/screenshot.js"
+  },
+  "dependencies": {
+    "playwright": "^1.42.0"
+  }
+}
