@@ -19,7 +19,7 @@ jobs:
         run: npm install
 
       - name: Capture screenshot
-        run: node capture.js
+        run: node scripts/capture.js
 
       - name: Commit image
         run: |
