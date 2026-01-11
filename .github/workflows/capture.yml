@@ -1,0 +1,30 @@
+name: signage-capture
+
+on:
+  schedule:
+    - cron: "*/15 8-17 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+
+    container:
+      image: mcr.microsoft.com/playwright:v1.41.0-jammy
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Capture screenshot
+        run: node capture.js
+
+      - name: Commit image
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add latest.png
+          git commit -m "update screenshot" || echo "no change"
+          git push
