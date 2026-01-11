@@ -1,44 +1,54 @@
-import { chromium } from 'playwright';
-import fs from 'fs';
-
-const URL = 'https://solar-carport.meiwajp-dev.link/meiwa-rental';
+const { chromium } = require('playwright');
 
 (async () => {
+  const URL = 'https://solar-carport.meiwajp-dev.link/meiwa-rental';   // ← 対象URLに変更
+  const OUTPUT = 'latest.png';
+
   const browser = await chromium.launch({
-    headless: true,
-    args: ['--disable-gpu']
+    args: ['--no-sandbox'],
   });
 
-  const page = await browser.newPage({
-    viewport: { width: 1920, height: 1080 }
+  const context = await browser.newContext({
+    viewport: { width: 1920, height: 1080 },   // 取得サイズを固定
+    deviceScaleFactor: 1,
   });
 
-  // タイムアウトを長めに
-  page.setDefaultTimeout(60000);
+  const page = await context.newPage();
 
-  console.log('open:', URL);
-  await page.goto(URL, { waitUntil: 'domcontentloaded' });
+  /* ============================
+     1. ページ読み込み
+     ============================ */
+  await page.goto(URL, {
+    waitUntil: 'domcontentloaded',
+    timeout: 30000,
+  });
 
-  // 常時アニメーション対策：
-  // 「通信が落ち着いた」+「固定待機」
-  try {
-    await page.waitForLoadState('networkidle', { timeout: 20000 });
-  } catch (e) {
-    console.log('networkidle not reached, continue');
-  }
+  /* ============================
+     2. 表示の「落ち着き」待ち
+     ============================ */
 
-  // さらに安全マージン
-  await page.waitForTimeout(5000);
+  // ネットワークが静かになるまで待つ
+  await page.waitForLoadState('networkidle');
 
-  // 保存先
-  const path = 'latest.png';
+  // さらにアニメーション・遷移対策で少し待機
+  await page.waitForTimeout(2000);
 
+  // フォントの描画完了を保証
+  await page.evaluate(async () => {
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+  });
+
+  /* ============================
+     3. スクリーンショット取得
+     ============================ */
   await page.screenshot({
-    path,
-    fullPage: false
+    path: OUTPUT,
+    fullPage: false,   // ビューポートサイズ固定
   });
-
-  console.log('saved:', path);
 
   await browser.close();
+
+  console.log(`Captured: ${OUTPUT}`);
 })();
