@@ -23,6 +23,7 @@ jobs:
 
       - name: Commit image
         run: |
+          git config --global --add safe.directory /__w/signage-screenshot/signage-screenshot
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add latest.png
