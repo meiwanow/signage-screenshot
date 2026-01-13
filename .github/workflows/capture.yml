@@ -30,7 +30,3 @@ jobs:
 
       # 5. 最新画像を git commit & push（force-with-lease）
       - name: Commit image
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add la
