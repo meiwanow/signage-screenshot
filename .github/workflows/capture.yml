@@ -15,15 +15,22 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.57.0-jammy
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - run: npm install
+      - name: Install dependencies
+        run: npm install
+        working-directory: /__w/signage-screenshot/signage-screenshot
 
-      - run: node scripts/screenshot.js
+      - name: Capture screenshot
+        run: node scripts/screenshot.js
+        working-directory: /__w/signage-screenshot/signage-screenshot
 
-      - run: |
+      - name: Commit image
+        run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add latest.png
           git commit -m "update screenshot" || echo "no change"
           git push
+        working-directory: /__w/signage-screenshot/signage-screenshot
