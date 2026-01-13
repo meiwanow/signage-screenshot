@@ -1,33 +1,38 @@
-name: Capture Screenshot via Cloudflare
+name: signage-capture
 
+# Cloudflare Worker から repository_dispatch で起動される
 on:
   repository_dispatch:
-    types: [capture]
+    types: [capture]   # Worker で指定する event_type と一致させる
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   capture:
     runs-on: ubuntu-latest
+
+    container:
+      image: mcr.microsoft.com/playwright:v1.57.0-jammy
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Install Playwright browsers
-        run: npx playwright install
+        run: |
+          npm ci
+          npx playwright install
 
       - name: Capture screenshot
         run: node scripts/screenshot.js
 
       - name: Commit image
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
           git add latest.png
           git commit -m "update screenshot" || echo "no change"
-          git push --force-with-lease
+          git push
