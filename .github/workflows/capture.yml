@@ -12,24 +12,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. リポジトリチェックアウト
+      # 1. リポジトリをチェックアウト
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. npm 依存関係インストール
+      # 2. npm 依存関係をインストール
       - name: Install dependencies
         run: npm install
-        working-directory: /__w/signage-screenshot/signage-screenshot
 
       # 3. Playwright ブラウザをインストール
       - name: Install Playwright browsers
         run: npx playwright install
-        working-directory: /__w/signage-screenshot/signage-screenshot
 
       # 4. スクリーンショット取得
       - name: Capture screenshot
         run: node scripts/screenshot.js
-        working-directory: /__w/signage-screenshot/signage-screenshot
 
       # 5. 最新画像を git commit & push
       - name: Commit image
@@ -39,4 +36,3 @@ jobs:
           git add latest.png
           git commit -m "update screenshot" || echo "no change"
           git push
-        working-directory: /__w/signage-screenshot/signage-screenshot
