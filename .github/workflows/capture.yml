@@ -11,25 +11,16 @@ jobs:
   capture:
     runs-on: ubuntu-latest
 
-    container:
-      image: mcr.microsoft.com/playwright:v1.57.0-jammy
-
     steps:
-      # リポジトリをチェックアウト
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 依存関係をインストール
       - name: Install dependencies
         run: npm install
-        working-directory: /__w/signage-screenshot/signage-screenshot
 
-      # スクリーンショットを撮る
       - name: Capture screenshot
         run: node scripts/screenshot.js
-        working-directory: /__w/signage-screenshot/signage-screenshot
 
-      # 画像を GitHub にコミット
       - name: Commit image
         run: |
           git config user.name "github-actions"
@@ -37,4 +28,3 @@ jobs:
           git add latest.png
           git commit -m "update screenshot" || echo "no change"
           git push
-        working-directory: /__w/signage-screenshot/signage-screenshot
