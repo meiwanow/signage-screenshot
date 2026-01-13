@@ -1,9 +1,8 @@
 name: signage-capture
 
-# Cloudflare Worker から repository_dispatch で起動される
 on:
   repository_dispatch:
-    types: [capture]   # Worker で指定する event_type と一致させる
+    types: [capture]
 
 permissions:
   contents: write
