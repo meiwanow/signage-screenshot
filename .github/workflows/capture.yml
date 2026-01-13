@@ -9,7 +9,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
   
 jobs:
   capture:
@@ -19,7 +18,8 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.57.0-jammy
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: npm install
